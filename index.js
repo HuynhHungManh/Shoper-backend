@@ -29,5 +29,10 @@ mongodb.MongoClient.connect('mongodb://manhhung:manhhung123@ds059316.mlab.com:59
     console.log("Database connected");
     GLOBAL.db = database;
     require('./product/init').initProductRouter(app);
+    require('./category/init').initCategoryRouter(app);
+    require('./group/init').initGroupRouter(app);
+    require('./group_type/init').initGroup_typeRouter(app);
+    require('./user/init').initUserRouter(app);
+    require('./role/init').initRoleRouter(app);
 });
 
