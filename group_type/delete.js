@@ -12,3 +12,5 @@ module.exports = function deleteGroups_type(req, res) {
         }
     )
 };
+
+

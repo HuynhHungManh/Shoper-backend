@@ -3,7 +3,7 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var cors = require('cors');
-var mongodb = require('mongodb');
+var mongoose = require('mongoose');
 
 
 app.use(cors());
@@ -14,20 +14,28 @@ app.use(bodyParser.urlencoded({
 
 
 
-var server = app.listen(process.env.port | 8080, function () {
+var server = app.listen(process.env.port | 8080, function() {
     var port = server.address().port;
     console.log("App now running on port", port);
 });
 
+var opt = {
+    user: 'manhhung',
+    pass: 'manhhung123',
+    auth: {
+        authdb: 'manhhung'
+    }
+};
 
-mongodb.MongoClient.connect('mongodb://manhhung:manhhung123@ds059316.mlab.com:59316/manhhung', function (err, database) {
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://ds059316.mlab.com:59316/manhhung', opt, function(err, database) {
     if (err) {
         console.log(err);
         process.exit(1);
     }
 
     console.log("Database connected");
-    GLOBAL.db = database;
+
     require('./product/init').initProductRouter(app);
     require('./category/init').initCategoryRouter(app);
     require('./group/init').initGroupRouter(app);
@@ -35,4 +43,3 @@ mongodb.MongoClient.connect('mongodb://manhhung:manhhung123@ds059316.mlab.com:59
     require('./user/init').initUserRouter(app);
     require('./role/init').initRoleRouter(app);
 });
-

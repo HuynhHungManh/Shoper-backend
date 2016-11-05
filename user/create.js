@@ -4,18 +4,50 @@
 'use strict';
 module.exports = function createUsers(req, res) {
 
+    var errorHandler = function(status, message) {
+        res.status(status).json({
+            message: message.toString()
+        });
+    };
 
-    var user = require('./user.object');
-    var myUser = new user();
-    myUser.setUser(req.body.username, req.body.password,  req.body.role_id);
+    try {
+        var Role = require('../role/role.object');
+        var User = require('../user/user.object');
+        var validateObjectExist = require('../utils/validateObjectExist');
+        var validatePropertyObject = require('../utils/validatePropertyObject');
 
-    GLOBAL.db.collection('user').insertOne(myUser.getUser(),
-        function (err, doc) {
-            if (err) {
-                res.status(400).json({message: err})
-            }
-            else
-                res.status(201).json(doc.ops[0]);
+        var validateAllObjectExist = function() {
+            validateObjectExist(Role, req.body.role)
+                .then(createUser, errorHandler.bind(null, 400))
+                .catch(function(err) {
+                    errorHandler(500, err);
+                });
         }
-    );
+
+        validatePropertyObject(req.body, ['role'])
+            .then(validateAllObjectExist, errorHandler.bind(null, 400));
+
+        var createUser = function() {
+            var user = new User({
+                username: req.body.username,
+                password: req.body.password,
+                role: req.body.role
+            });
+
+            user.save(function(err, doc) {
+                if (err) {
+                    errorHandler(400, err);
+                }
+                else {
+                    res.status(201).json(doc);
+                }
+            });
+        }
+    }
+    catch (ex) {
+        console.log('create user: ' + ex.toString() + ' inline: ' + ex.stack);
+        errorHandler(500, ex);
+    }
 };
+
+

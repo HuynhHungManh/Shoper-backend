@@ -1,18 +1,13 @@
 /**
  * Created by PC on 10/16/2016.
  */
-var group_type = function () {
 
-    this.setGroup_type = function (code) {
-        this.code = code;
 
-    };
+var mongoose = require("mongoose");
 
-    this.getGroup_type = function () {
-        return {
-            code: this.code
+var Group_typeSchema = mongoose.Schema({
+    code: String,
 
-        }
-    };
-};
-module.exports = group_type;
+});
+
+module.exports = mongoose.model('Group_type', Group_typeSchema);

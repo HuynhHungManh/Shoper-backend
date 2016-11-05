@@ -3,13 +3,16 @@
  */
 module.exports  = function fetchListRoles(req, res) {
 
-
-    GLOBAL.db.collection('role').find({}).toArray(function (err, docs) {
+    var Role = require('./category.object');
+    Role.find(function(err, docs) {
         if (err) {
-            res.status(400).json({message: err});
+            res.status(400).json({
+                message: err
+            });
         }
         else {
-            res.status(200).json(docs);
+            res.status(200).json({ "data" : docs});
         }
     });
 };
+
