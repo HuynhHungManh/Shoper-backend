@@ -1,9 +1,8 @@
 /**
  * Created by PC on 10/8/2016.
  */
-module.exports  = function updates(req, res) {
-    var ObjectId = require("mongodb").ObjectId;
-    var errorHandler = function(status, message) {
+module.exports = function updates(req, res) {
+    var errorHandler = function (status, message) {
         res.status(status).json({
             message: message.toString()
         });
@@ -11,27 +10,18 @@ module.exports  = function updates(req, res) {
 
     try {
         var User = require('./user.object');
+        var Role = require('../role/role.object');
         var validateObjectExist = require('../utils/validateObjectExist');
         var validatePropertyObject = require('../utils/validatePropertyObject');
 
-        var validateAllObjectExist = function() {
-            validateObjectExist('role', req.body.role_id)
-                .then(createUser, errorHandler.bind(null, 400))
-                .catch(function(err) {
-                    errorHandler(500, err);
-                });
-        }
-
-        validatePropertyObject(req.body, ['role_id'])
-            .then(validateAllObjectExist, errorHandler.bind(null, 400));
-
-        var createUser = function() {
+        var createUser = function () {
             var user = new User({
                 username: req.body.username,
                 password: req.body.password,
-                role: req.body.role_id
+                role: req.body.role._id
             });
-            user.save(function(err, doc) {
+
+            user.save(function (err, doc) {
                 if (err) {
                     errorHandler(400, err);
                 }
@@ -40,7 +30,16 @@ module.exports  = function updates(req, res) {
                 }
             });
         }
-        createUser();
+        User.findById(req.body._id, function (err, response) {
+            Promise.all([
+                validatePropertyObject.call(null, req.body, ['username', 'password']),
+                validateObjectExist.call(null, Role, req.body.role)
+            ])
+                .then(createUser(response))
+                .catch(function (err) {
+                    errorHandler(err.status, err.message);
+                });
+        });
     }
     catch (ex) {
         console.log('create user: ' + ex.toString() + ' inline: ' + ex.stack);

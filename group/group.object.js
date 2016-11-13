@@ -5,6 +5,7 @@
 
 var mongoose = require("mongoose");
 
+
 var GroupSchema = mongoose.Schema({
     group_type: {
         type: mongoose.Schema.Types.ObjectId,
@@ -16,7 +17,11 @@ var GroupSchema = mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Group', GroupSchema);
+
+module.exports = mongoose.model('group', GroupSchema);
+
+
+
 
 
 

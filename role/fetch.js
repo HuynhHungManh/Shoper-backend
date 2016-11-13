@@ -3,7 +3,7 @@
  */
 module.exports  = function fetchListRoles(req, res) {
 
-    var Role = require('./category.object');
+    var Role = require('./role.object');
     Role.find(function(err, docs) {
         if (err) {
             res.status(400).json({

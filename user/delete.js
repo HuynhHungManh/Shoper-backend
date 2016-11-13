@@ -2,7 +2,7 @@
  * Created by PC on 10/8/2016.
  */
 module.exports = function deleteUsers(req, res) {
-    var User = require('./category.object');
+    var User = require('./user.object');
 
     User.remove({
             _id: req.query.id

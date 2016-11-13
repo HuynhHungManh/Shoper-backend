@@ -4,12 +4,6 @@
 'use strict';
 module.exports = function createGroups(req, res) {
 
-    var errorHandler = function(status, message) {
-        res.status(status).json({
-            message: message.toString()
-        });
-    };
-
     try {
         var Group = require('./group.object');
         var Group_type = require('../group_type/group_type.object');
@@ -17,21 +11,11 @@ module.exports = function createGroups(req, res) {
         var validateObjectExist = require('../utils/validateObjectExist');
         var validatePropertyObject = require('../utils/validatePropertyObject');
 
-        var validateAllObjectExist = function() {
-            validateObjectExist(Group_type, req.body.group_type)
-                .then(function() {
-                    validateObjectExist(Product, req.body.product)
-                        .then(
-                            createGroup, errorHandler.bind(null, 400)
-                        );
-                }, errorHandler.bind(null, 400))
-                .catch(function(err) {
-                    errorHandler(500, err);
-                });
-        }
-
-        validatePropertyObject(req.body, ['group_type', 'product'])
-            .then(validateAllObjectExist, errorHandler.bind(null, 400));
+        var errorHandler = function(status, message) {
+            res.status(status).json({
+                message: message.toString()
+            });
+        };
 
         var createGroup = function() {
             var group = new Group({
@@ -47,7 +31,17 @@ module.exports = function createGroups(req, res) {
                     res.status(201).json(doc);
                 }
             });
-        }
+        };
+
+        Promise.all([
+            validatePropertyObject.call(null, req.body, ['group_type', 'product']),
+            validateObjectExist.call(null, Group_type, req.body.group_type),
+            validateObjectExist.call(null, Product, req.body.product)])
+            .then(createGroup)
+            .catch(function(err) {
+                errorHandler(err.status, err.message);
+            });
+
     }
     catch (ex) {
         console.log('create group: ' + ex.toString() + ' inline: ' + ex.stack);

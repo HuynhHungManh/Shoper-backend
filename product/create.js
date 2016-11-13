@@ -1,36 +1,17 @@
-/**
- * Created by PC on 10/8/2016.
- */
 'use strict';
 module.exports = function createProducts(req, res) {
+
     var errorHandler = function(status, message) {
         res.status(status).json({
             message: message.toString()
         });
     };
-
     try {
         var Product = require('./product.object');
         var Category = require('../category/category.object');
         var User = require('../user/user.object');
         var validateObjectExist = require('../utils/validateObjectExist');
         var validatePropertyObject = require('../utils/validatePropertyObject');
-
-        var validateAllObjectExist = function() {
-            validateObjectExist('category', req.body.category)
-                .then(function() {
-                    validateObjectExist('user', req.body.user)
-                        .then(
-                            createProduct, errorHandler.bind(null, 400)
-                        );
-                }, errorHandler.bind(null, 400))
-                .catch(function(err) {
-                    errorHandler(500, err);
-                });
-        }
-
-        validatePropertyObject(req.body, ['category', 'user'])
-            .then(createProduct, errorHandler.bind(null, 400));
 
         var createProduct = function() {
             var product = new Product({
@@ -56,6 +37,17 @@ module.exports = function createProducts(req, res) {
                 }
             });
         }
+
+        Promise.all([
+            validatePropertyObject.call(null, req.body, ['category', 'user']),
+            validateObjectExist.call(null, Category, req.body.category),
+            validateObjectExist.call(null, User, req.body.user)
+        ])
+            .then(createProduct)
+            .catch(function(err) {
+                errorHandler(err.status, err.message);
+            });
+
     }
     catch (ex) {
         console.log('create product: ' + ex.toString() + ' inline: ' + ex.stack);

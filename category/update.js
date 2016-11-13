@@ -1,20 +1,44 @@
 /**
  * Created by PC on 10/8/2016.
  */
-module.exports  = function updateCategorys(req, res) {
-    var updateDoc = req.body;
-    delete updateDoc._id;
+module.exports = function updateCategorys(req, res) {
+    var ObjectId = require("mongodb").ObjectId;
 
-    GLOBAL.db.collection('category').updateOne(
-        {id: (req.param.id)}, {
-            $set: updateDoc,
-            $currentDate: {"lastModified": true}
-        },
-        function (err, doc) {
-            if (err)
-                res.status(400).json({message: err});
-            else
-                res.status(201).json({message: "update success"})
+    try {
+        var Category = require('./category.object');
+
+        var validatePropertyObject = require('../utils/validatePropertyObject');
+
+        var errorHandler = function(status, message) {
+            res.status(status).json({
+                message: message.toString()
+            });
+        };
+
+        var createCategory = function(category) {
+            category.name = req.body.name;
+            category.code = req.body.code;
+
+            category.save(function(err, doc) {
+                if (err) {
+                    errorHandler(400, err);
+                }
+                else {
+                    res.status(201).json(doc);
+                }
+            });
         }
-    )
+        Category.findById(req.body._id, function (err, response) {
+            Promise.all([
+                validatePropertyObject.call(null, req.body, ['code', 'name'])])
+                .then(createCategory(response))
+                .catch(function (err) {
+                    errorHandler(err.status, err.message);
+                });
+        });
+    }
+    catch (ex) {
+        console.log('update categories: ' + ex.toString() + ' inline: ' + ex.stack);
+        errorHandler(500, ex);
+    }
 };

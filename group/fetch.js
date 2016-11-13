@@ -2,12 +2,14 @@
  * Created by PC on 10/8/2016.
  */
 module.exports = function fetchListGroups(req, res) {
+    var Group = require('./group.object');
+    var Group_type = require('../group_type/group_type.object');
+    var Product = require('../product/product.object');
 
-    var group = require('./group.object');
 
-    group.find({})
-        .populate('products.product')
+    Group.find({})
         .populate('group_type')
+        .populate('product')
         .exec(function(err, docs) {
             if (err) {
                 res.status(400).json({
@@ -15,7 +17,7 @@ module.exports = function fetchListGroups(req, res) {
                 });
             }
             else {
-                res.status(200).json(docs);
+                res.status(200).json({ "data" : docs});
             }
         });
 };

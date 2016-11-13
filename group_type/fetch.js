@@ -4,12 +4,16 @@
 module.exports  = function fetchListGroups_type(req, res) {
 
 
-    GLOBAL.db.collection('group_types').find({}).toArray(function (err, docs) {
+    var Group_type = require('../group_type/group_type.object');
+
+    Group_type.find(function(err, docs) {
         if (err) {
-            res.status(400).json({message: err});
+            res.status(400).json({
+                message: err
+            });
         }
         else {
-            res.status(200).json(docs);
+            res.status(200).json({ "data" : docs});
         }
     });
 };

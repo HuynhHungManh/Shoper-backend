@@ -6,8 +6,7 @@
 var mongoose = require("mongoose");
 
 var Group_typeSchema = mongoose.Schema({
-    code: String,
-
+    code: String
 });
 
 module.exports = mongoose.model('Group_type', Group_typeSchema);

@@ -16,10 +16,10 @@ var ProductSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category'
     },
-    uses: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }
 });
 
-module.exports = mongoose.model('product', ProductSchema);
+module.exports = mongoose.model('Product', ProductSchema);

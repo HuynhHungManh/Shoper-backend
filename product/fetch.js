@@ -4,9 +4,10 @@
 module.exports = function fetchListProducts(req, res) {
     var Product = require('./product.object');
     var Category = require('../category/category.object');
+    var User = require('../user/user.object');
 
     Product.find({})
-        .populate('categories.category')
+        .populate('category')
         .populate('user')
         .exec(function(err, docs) {
             if (err) {

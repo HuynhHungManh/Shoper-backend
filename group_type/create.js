@@ -4,19 +4,41 @@
 'use strict';
 module.exports = function createGroups_type(req, res) {
 
-    var group_type = require('./group_type.object');
-    var myGroup_type = new group_type({
-        code: req.body.code,
-    });
-
-    myGroup_type.save(
-        function(err, doc) {
-            if (err) {
-                res.status(400).json({
-                    message: err
-                })
-            }
-            else
-                res.status(201).json({message: "successed"});
+    var errorHandler = function(status, message) {
+        res.status(status).json({
+            message: message.toString()
         });
+    };
+
+    try {
+        var Group_type = require('../group_type/group_type.object');
+
+        var validatePropertyObject = require('../utils/validatePropertyObject');
+
+
+        var createGroup_type = function() {
+            var group_type = new Group_type({
+                code: req.body.code
+            });
+            group_type.save(function(err, doc) {
+                if (err) {
+                    errorHandler(400, err);
+                }
+                else {
+                    res.status(201).json(doc);
+                }
+            });
+        };
+
+        Promise.all([
+            validatePropertyObject.call(null, req.body, ['code'])])
+            .then(createGroup_type)
+            .catch(function(err) {
+                errorHandler(err.status, err.message);
+            });
+    }
+    catch (ex) {
+        console.log('create group_type: ' + ex.toString() + ' inline: ' + ex.stack);
+        errorHandler(500, ex);
+    }
 };

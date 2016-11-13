@@ -6,10 +6,12 @@ var validatePropertyObject = function validatePropertyObject(object, listPropert
         try {
             var isSuccess = true;
             var keyInvalid = '';
+
+
             listProperty.forEach(function(key) {
                 if (object[key] === null || object[key] === undefined || object[key] === [] || object[key] === '') {
                     isSuccess = false;
-                    keyInvalid = key;
+                    keyInvalid = key
                     return;
                 }
             });
@@ -17,12 +19,18 @@ var validatePropertyObject = function validatePropertyObject(object, listPropert
                 resolve();
             }
             else {
-                reject(keyInvalid + " invalid!");
+                reject({
+                    status: 400,
+                    message: keyInvalid + " invalid!"
+                });
             }
         }
         catch (ex) {
             console.log('validate property object: ' + ex.toString() + ' inline: ' + ex.stack);
-            reject(ex);
+            reject({
+                status: 500,
+                message: ex
+            });
         }
     });
 };
