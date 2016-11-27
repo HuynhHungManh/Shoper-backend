@@ -35,7 +35,7 @@ module.exports  = function updateGroups(req, res) {
                 validateObjectExist.call(null, Group_type, req.body.group_type._id),
                 validateObjectExist.call(null, Product, req.body.product._id)
             ])
-                .then(createGroup(response))
+                .then(createGroup.bind(null, response))
                 .catch(function (err) {
                     errorHandler(err.status, err.message);
                 });

@@ -1,5 +1,8 @@
-/**
- * Created by PC on 10/26/2016.
+/* function: validate object is exist in db
+ * table: table where object storage
+ * id: id of object
+ * res: response of request API
+ * callback: callback which run when succes
  */
 var validateObjectExist = function validateObjectExist(schema, id) {
     return new Promise(function(resolve, reject) {

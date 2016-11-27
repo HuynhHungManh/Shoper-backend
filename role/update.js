@@ -33,7 +33,7 @@ module.exports = function updateRoles(req, res) {
 
         Role.findById(req.body._id, function (err, response) {
             Promise.all([validatePropertyObject.call(null, req.body, ['name'])])
-                .then(createRole(response))
+                .then(createRole.bind(null, response))
                 .catch(function (err) {
                     errorHandler(err.status, err.message);
                 });

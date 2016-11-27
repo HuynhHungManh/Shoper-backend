@@ -1,6 +1,3 @@
-/**
- * Created by PC on 10/8/2016.
- */
 module.exports = function updateProducts(req, res) {
     var errorHandler = function (status, message) {
         res.status(status).json({
@@ -14,6 +11,8 @@ module.exports = function updateProducts(req, res) {
 
         var validateObjectExist = require('../utils/validateObjectExist');
         var validatePropertyObject = require('../utils/validatePropertyObject');
+
+
 
         var createProduct = function (product) {
             product.code = req.body.code;
@@ -35,17 +34,19 @@ module.exports = function updateProducts(req, res) {
                     res.status(201).json(doc);
                 }
             });
-        }
+        };
         Product.findById(req.body._id, function (err, response) {
+
             Promise.all([
                 validatePropertyObject.call(null, req.body, ['code', 'name', 'image', 'detail_b', 'detail_rp', 'detail_pc', 'availability']),
                 validateObjectExist.call(null, Category, req.body.category._id),
                 validateObjectExist.call(null, User, req.body.user._id)
             ])
-                .then(createProduct(response))
+                .then(createProduct.bind(null, response))
                 .catch(function (err) {
                     errorHandler(err.status, err.message);
                 });
+
         });
     }
     catch (ex) {

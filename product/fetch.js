@@ -6,6 +6,8 @@ module.exports = function fetchListProducts(req, res) {
     var Category = require('../category/category.object');
     var User = require('../user/user.object');
 
+
+
     Product.find({})
         .populate('category')
         .populate('user')

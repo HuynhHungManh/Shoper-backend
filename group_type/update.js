@@ -31,7 +31,7 @@ module.exports = function updateGroups_type(req, res) {
         Group_type.findById(req.body._id, function (err, response) {
             Promise.all([
                 validatePropertyObject.call(null, req.body, ['code'])])
-                .then(createGroup_type(response))
+                .then(createGroup_type.bind(null, response))
                 .catch(function (err) {
                     errorHandler(err.status, err.message);
                 });

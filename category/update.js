@@ -2,18 +2,17 @@
  * Created by PC on 10/8/2016.
  */
 module.exports = function updateCategorys(req, res) {
-    var ObjectId = require("mongodb").ObjectId;
-
+    var errorHandler = function(status, message) {
+        res.status(status).json({
+            message: message.toString()
+        });
+    };
     try {
         var Category = require('./category.object');
 
         var validatePropertyObject = require('../utils/validatePropertyObject');
 
-        var errorHandler = function(status, message) {
-            res.status(status).json({
-                message: message.toString()
-            });
-        };
+
 
         var createCategory = function(category) {
             category.name = req.body.name;
@@ -29,11 +28,11 @@ module.exports = function updateCategorys(req, res) {
             });
         }
         Category.findById(req.body._id, function (err, response) {
-            Promise.all([
-                validatePropertyObject.call(null, req.body, ['code', 'name'])])
-                .then(createCategory(response))
-                .catch(function (err) {
-                    errorHandler(err.status, err.message);
+            Promise.all([validatePropertyObject.call(null, req.body, ['code', 'name'])])
+                .then(createCategory.bind(null, response))
+                .catch(function(err) {
+                     errorHandler(err.status, err.message);
+                    console.log(err.status);
                 });
         });
     }

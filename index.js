@@ -6,6 +6,7 @@ var cors = require('cors');
 var mongoose = require('mongoose');
 
 
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -42,4 +43,5 @@ mongoose.connect('mongodb://ds059316.mlab.com:59316/manhhung', opt, function(err
     require('./group_type/init').initGroup_typeRouter(app);
     require('./user/init').initUserRouter(app);
     require('./role/init').initRoleRouter(app);
+    require('./login/init').initLoginRouter(app);
 });

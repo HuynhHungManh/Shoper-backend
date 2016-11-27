@@ -1,17 +1,18 @@
-/**
- * Created by PC on 10/26/2016.
+/* function: validate property of object is valid
+ * object: object need to check
+ * listProperty: list property of object which is required
+ * callbackSuccess: will call when all property of object is valid
+ * callbackFail: will call when have least one property of object is invalid
  */
 var validatePropertyObject = function validatePropertyObject(object, listProperty) {
     return new Promise(function(resolve, reject) {
         try {
             var isSuccess = true;
             var keyInvalid = '';
-
-
             listProperty.forEach(function(key) {
                 if (object[key] === null || object[key] === undefined || object[key] === [] || object[key] === '') {
                     isSuccess = false;
-                    keyInvalid = key
+                    keyInvalid = key;
                     return;
                 }
             });

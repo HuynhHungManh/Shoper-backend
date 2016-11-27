@@ -3,17 +3,19 @@
  */
 module.exports  = function fetchListUsers(req, res) {
     var User = require('./user.object');
+    var Role = require('../role/role.object');
+
     User.find({})
         .populate('role')
         .exec(function(err, docs) {
             if (err) {
-                console.log(docs);
+                // console.log(docs);
                 res.status(400).json({
                     message: err
                 });
             }
             else {
-                res.status(200).json(docs);
+                res.status(200).json({ "data" : docs});
             }
         });
 };
