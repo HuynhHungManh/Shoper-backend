@@ -20,6 +20,7 @@ module.exports = function createUsers(req, res) {
             var user = new User({
                 username: req.body.username,
                 password: req.body.password,
+                islock: req.body.islock,
                 role: req.body.role
             });
 
@@ -33,7 +34,7 @@ module.exports = function createUsers(req, res) {
             });
         }
         Promise.all([
-            validatePropertyObject.call(null, req.body, ['username', 'password']),
+            validatePropertyObject.call(null, req.body, ['username', 'password','islock']),
             validateObjectExist.call(null, Role, req.body.role)
         ])
             .then(createUser)

@@ -18,6 +18,7 @@ module.exports = function updates(req, res) {
 
             user.username = req.body.username;
             user.password = req.body.password;
+            user.islock = req.body.islock;
             user.role = req.body.role._id;
             user.save(function (err, doc) {
                 if (err) {
@@ -31,7 +32,7 @@ module.exports = function updates(req, res) {
         User.findById(req.body._id, function (err, response) {
 
             Promise.all([
-                validatePropertyObject.call(null, req.body, ['username', 'password','role']),
+                validatePropertyObject.call(null, req.body, ['username', 'password','role','islock']),
                 validateObjectExist.call(null, Role, req.body.role._id)])
                 .then(createUser.bind(null, response))
                 .catch(function (err) {

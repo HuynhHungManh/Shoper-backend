@@ -13,7 +13,6 @@ module.exports = function updateProducts(req, res) {
         var validatePropertyObject = require('../utils/validatePropertyObject');
 
 
-
         var createProduct = function (product) {
             product.code = req.body.code;
             product.name = req.body.name;
@@ -39,14 +38,13 @@ module.exports = function updateProducts(req, res) {
 
             Promise.all([
                 validatePropertyObject.call(null, req.body, ['code', 'name', 'image', 'detail_b', 'detail_rp', 'detail_pc', 'availability']),
-                validateObjectExist.call(null, Category, req.body.category._id),
-                validateObjectExist.call(null, User, req.body.user._id)
+                validateObjectExist.call(null, Category, req.body.category),
+                validateObjectExist.call(null, User, req.body.user)
             ])
                 .then(createProduct.bind(null, response))
                 .catch(function (err) {
                     errorHandler(err.status, err.message);
                 });
-
         });
     }
     catch (ex) {
