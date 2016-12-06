@@ -4,6 +4,8 @@ var app = express();
 var bodyParser = require('body-parser');
 var cors = require('cors');
 var mongoose = require('mongoose');
+var jwt = require('jwt-simple');
+var passport = require('passport');
 
 
 
@@ -13,6 +15,8 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
+app.use(passport.initialize());
+require('./config/passport')(passport);
 
 
 var server = app.listen(process.env.port | 8080, function() {
@@ -37,11 +41,11 @@ mongoose.connect('mongodb://ds059316.mlab.com:59316/manhhung', opt, function(err
 
     console.log("Database connected");
 
-    require('./product/init').initProductRouter(app);
-    require('./category/init').initCategoryRouter(app);
-    require('./group/init').initGroupRouter(app);
-    require('./group_type/init').initGroup_typeRouter(app);
-    require('./user/init').initUserRouter(app);
-    require('./role/init').initRoleRouter(app);
+    require('./product/product.init').initProductRouter(app);
+    require('./category/category.init').initCategoryRouter(app);
+    require('./group/group.init').initGroupRouter(app);
+    require('./group_type/group_type.init').initGroup_typeRouter(app);
+    require('./user/user.init').initUserRouter(app);
+    require('./role/role.init').initRoleRouter(app);
     require('./login/init').initLoginRouter(app);
 });
