@@ -2,8 +2,8 @@
  * Created by PC on 12/4/2016.
  */
 var JwtStrategy = require('passport-jwt').Strategy;
-
 var User = require('../user/user.object');
+
 module.exports =  function (passport) {
    var opts = {};
    opts.secretOrKey = 'Shoper';

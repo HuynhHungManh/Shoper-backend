@@ -4,13 +4,12 @@
 exports.initUserRouter = function initUserRouter(app) {
     var passport = require('passport');
 
-    app.get('/user/fetch',passport.authenticate('jwt',{session:false}), function fetchListUsers(req, res) {
+    app.get('/user/fetch', passport.authenticate('jwt', {session: false}), function fetchListUsers(req, res) {
         var User = require('./user.object');
         var Role = require('../role/role.object');
-
         User.find({})
             .populate('role')
-            .exec(function(err, docs) {
+            .exec(function (err, docs) {
                 if (err) {
                     // console.log(docs);
                     res.status(400).json({
@@ -18,33 +17,30 @@ exports.initUserRouter = function initUserRouter(app) {
                     });
                 }
                 else {
-                    res.status(200).json({ "data" : docs});
+                    res.status(200).json({"data": docs});
                 }
             });
     });
-    app.post('/user/create',passport.authenticate('jwt',{session:false}),function createUsers(req, res) {
 
-        var errorHandler = function(status, message) {
+    app.post('/user/create', passport.authenticate('jwt', {session: false}), function createUsers(req, res) {
+        var errorHandler = function (status, message) {
             res.status(status).json({
                 message: message.toString()
             });
         };
-
-        try{
+        try {
             var User = require('./user.object');
             var Role = require('../role/role.object');
             var validateObjectExist = require('../utils/validateObjectExist');
             var validatePropertyObject = require('../utils/validatePropertyObject');
-
-            var createUser = function() {
+            var createUser = function () {
                 var user = new User({
                     username: req.body.username,
                     password: req.body.password,
                     islock: req.body.islock,
                     role: req.body.role
                 });
-
-                user.save(function(err, doc) {
+                user.save(function (err, doc) {
                     if (err) {
                         errorHandler(400, err);
                     }
@@ -54,11 +50,11 @@ exports.initUserRouter = function initUserRouter(app) {
                 });
             };
             Promise.all([
-                validatePropertyObject.call(null, req.body, ['username', 'password','islock']),
+                validatePropertyObject.call(null, req.body, ['username', 'password', 'islock']),
                 validateObjectExist.call(null, Role, req.body.role)
             ])
                 .then(createUser)
-                .catch(function(err) {
+                .catch(function (err) {
                     errorHandler(err.status, err.message);
                 });
         }
@@ -67,21 +63,19 @@ exports.initUserRouter = function initUserRouter(app) {
             errorHandler(500, ex);
         }
     });
-    app.post('/user/update',passport.authenticate('jwt',{session:false}),function updates(req, res) {
+
+    app.post('/user/update', passport.authenticate('jwt', {session: false}), function updates(req, res) {
         var errorHandler = function (status, message) {
             res.status(status).json({
                 message: message.toString()
             });
         };
-
         try {
             var User = require('./user.object');
             var Role = require('../role/role.object');
             var validateObjectExist = require('../utils/validateObjectExist');
             var validatePropertyObject = require('../utils/validatePropertyObject');
-
             var createUser = function (user) {
-
                 user.username = req.body.username;
                 user.password = req.body.password;
                 user.islock = req.body.islock;
@@ -98,7 +92,7 @@ exports.initUserRouter = function initUserRouter(app) {
             User.findById(req.body._id, function (err, response) {
 
                 Promise.all([
-                    validatePropertyObject.call(null, req.body, ['username', 'password','role','islock']),
+                    validatePropertyObject.call(null, req.body, ['username', 'password', 'role', 'islock']),
                     validateObjectExist.call(null, Role, req.body.role._id)])
                     .then(createUser.bind(null, response))
                     .catch(function (err) {
@@ -111,13 +105,13 @@ exports.initUserRouter = function initUserRouter(app) {
             errorHandler(500, ex);
         }
     });
-    app.get('/user/delete',passport.authenticate('jwt',{session:false}), function deleteUsers(req, res) {
-        var User = require('./user.object');
 
+    app.get('/user/delete', passport.authenticate('jwt', {session: false}), function deleteUsers(req, res) {
+        var User = require('./user.object');
         User.remove({
                 _id: req.query.id
             },
-            function(err, doc) {
+            function (err, doc) {
                 if (err)
                     res.status(400).json({
                         message: err

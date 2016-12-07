@@ -2,7 +2,6 @@
  * Created by PC on 10/16/2016.
  */
 var mongoose = require("mongoose");
-
 var ProductSchema = mongoose.Schema({
     name: String,
     code: String,
@@ -21,5 +20,4 @@ var ProductSchema = mongoose.Schema({
         ref: 'User'
     }
 });
-
 module.exports = mongoose.model('Product', ProductSchema);

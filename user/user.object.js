@@ -1,9 +1,7 @@
 /**
  * Created by PC on 10/16/2016.
  */
-
 var mongoose = require("mongoose");
-
 var UserSchema = mongoose.Schema({
     username: String,
     password: String,
@@ -13,7 +11,6 @@ var UserSchema = mongoose.Schema({
         ref: 'Role'
     }
 });
-
 module.exports = mongoose.model('User', UserSchema);
 
 

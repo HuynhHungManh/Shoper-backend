@@ -5,12 +5,12 @@
  * callback: callback which run when succes
  */
 var validateObjectExist = function validateObjectExist(schema, id) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         try {
             schema.find({
                 _id: id
             })
-                .exec(function(err, docs) {
+                .exec(function (err, docs) {
                     if (err) {
                         reject({
                             status: 400,
@@ -39,5 +39,4 @@ var validateObjectExist = function validateObjectExist(schema, id) {
         }
     });
 };
-
 module.exports = validateObjectExist;
