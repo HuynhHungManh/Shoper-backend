@@ -4,30 +4,29 @@
 exports.initProductRouter = function initProductRouter(app) {
 
     var passport = require('passport');
-    app.get('/product/fetch',passport.authenticate('jwt',{session:false}), function fetchListProducts(req, res) {
+    app.get('/product/fetch', passport.authenticate('jwt', {session: false}), function fetchListProducts(req, res) {
         var Product = require('./product.object');
         var Category = require('../category/category.object');
         var User = require('../user/user.object');
 
 
-
         Product.find({})
             .populate('category')
             .populate('user')
-            .exec(function(err, docs) {
+            .exec(function (err, docs) {
                 if (err) {
                     res.status(400).json({
                         message: err
                     });
                 }
                 else {
-                    res.status(200).json({ "data" : docs});
+                    res.status(200).json({"data": docs});
                 }
             });
     });
-    app.post('/product/create',passport.authenticate('jwt',{session:false}), function createProducts(req, res) {
+    app.post('/product/create', passport.authenticate('jwt', {session: false}), function createProducts(req, res) {
 
-        var errorHandler = function(status, message) {
+        var errorHandler = function (status, message) {
             res.status(status).json({
                 message: message.toString()
             });
@@ -40,7 +39,7 @@ exports.initProductRouter = function initProductRouter(app) {
             var validatePropertyObject = require('../utils/validatePropertyObject');
 
 
-            var createProduct = function() {
+            var createProduct = function () {
                 var product = new Product({
                     code: req.body.code,
                     name: req.body.name,
@@ -55,7 +54,7 @@ exports.initProductRouter = function initProductRouter(app) {
 
                 });
 
-                product.save(function(err, doc) {
+                product.save(function (err, doc) {
                     if (err) {
                         errorHandler(400, err);
                     }
@@ -71,7 +70,7 @@ exports.initProductRouter = function initProductRouter(app) {
                 validateObjectExist.call(null, User, req.body.user)
             ])
                 .then(createProduct)
-                .catch(function(err) {
+                .catch(function (err) {
                     errorHandler(err.status, err.message);
                 });
 
@@ -81,7 +80,7 @@ exports.initProductRouter = function initProductRouter(app) {
             errorHandler(500, ex);
         }
     });
-    app.post('/product/update', passport.authenticate('jwt',{session:false}),function updateProducts(req, res) {
+    app.post('/product/update', passport.authenticate('jwt', {session: false}), function updateProducts(req, res) {
         var errorHandler = function (status, message) {
             res.status(status).json({
                 message: message.toString()
@@ -120,7 +119,7 @@ exports.initProductRouter = function initProductRouter(app) {
             Product.findById(req.body._id, function (err, response) {
 
                 Promise.all([
-                    validatePropertyObject.call(null, req.body, ['code', 'name', 'image', 'detail_b', 'detail_rp', 'detail_pc','availability']),
+                    validatePropertyObject.call(null, req.body, ['code', 'name', 'image', 'detail_b', 'detail_rp', 'detail_pc', 'availability']),
                     validateObjectExist.call(null, Category, req.body.category),
                     validateObjectExist.call(null, User, req.body.user)
                 ])
@@ -135,13 +134,13 @@ exports.initProductRouter = function initProductRouter(app) {
             errorHandler(500, ex);
         }
     });
-    app.get('/product/delete',passport.authenticate('jwt',{session:false}),function deleteProducts(req, res) {
+    app.get('/product/delete', passport.authenticate('jwt', {session: false}), function deleteProducts(req, res) {
         var Product = require('./product.object');
 
         Product.remove({
                 _id: req.query.id
             },
-            function(err, doc) {
+            function (err, doc) {
                 if (err)
                     res.status(400).json({
                         message: err

@@ -6,8 +6,7 @@ var cors = require('cors');
 var mongoose = require('mongoose');
 var jwt = require('jwt-simple');
 var passport = require('passport');
-
-
+var multer = require('multer');
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -17,6 +16,30 @@ app.use(bodyParser.urlencoded({
 
 app.use(passport.initialize());
 require('./config/passport')(passport);
+
+var storage = multer.diskStorage({ //multers disk storage settings
+    destination: function (req, file, cb) {
+        cb(null, './uploads/')
+    },
+    filename: function (req, file, cb) {
+        var datetimestamp = Date.now();
+        cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length -1])
+    }
+});
+var upload = multer({ //multer settings
+    storage: storage
+}).single('file');
+/** API path that will upload the files */
+app.post('/upload', function(req, res) {
+    console.log(req.body);
+    upload(req,res,function(err){
+        if(err){
+            res.json({error_code:1,err_desc:err});
+            return;
+        }
+        res.json({error_code:0,err_desc:null});
+    })
+});
 
 
 var server = app.listen(process.env.port | 8080, function() {
